@@ -157,8 +157,7 @@ class Trainer:
         wandb.log_artifact(artifact)
 
 
-    
-    def custom_collate_fn(self,batch):
+def custom_collate_fn(batch):
         """
         Custom collate function to reshape data into [batch size, channels, size].
         """
@@ -170,6 +169,16 @@ class Trainer:
         
         return {'signals': signals, 'gt': gt, 'sc': sc}
 
+def main():
+    file_path = 'datasets/train_set.pth'
+    dataset = torch.load(file_path)
+
+    train_loader = DataLoader(dataset, batch_size=32, shuffle=True,collate_fn=custom_collate_fn)
+    trainer = Trainer()
+    trainer(train_loader)
+
+if __name__ == "__main__":
+    main()
 
 
         
