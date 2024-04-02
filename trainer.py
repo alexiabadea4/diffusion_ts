@@ -1,7 +1,7 @@
 import time
 from typing import List, Optional, Union
 
-from tqdm.auto import tqdm
+
 
 import torch
 import torch.nn as nn
@@ -13,6 +13,7 @@ from diff_ts.epsilon_theta import EpsilonTheta
 from gluonts.core.component import validated
 import wandb
 import os
+from tqdm.auto import tqdm
 
 class Trainer:
 
