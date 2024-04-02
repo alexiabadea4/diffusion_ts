@@ -14,6 +14,7 @@ from gluonts.core.component import validated
 import wandb
 import os
 from tqdm.auto import tqdm
+import argparse
 
 class Trainer:
 
@@ -170,13 +171,41 @@ def custom_collate_fn(batch):
         
         return {'signals': signals, 'gt': gt, 'sc': sc}
 
+# def main():
+#     file_path = 'datasets/train_set.pth'
+#     dataset = torch.load(file_path)
+
+#     train_loader = DataLoader(dataset, batch_size=32, shuffle=True,collate_fn=custom_collate_fn)
+#     trainer = Trainer()
+#     trainer(train_loader)
+
 def main():
     file_path = 'datasets/train_set.pth'
     dataset = torch.load(file_path)
 
-    train_loader = DataLoader(dataset, batch_size=32, shuffle=True,collate_fn=custom_collate_fn)
-    trainer = Trainer()
-    trainer(train_loader)
+    # Broader grid search parameters
+    batch_sizes = [16, 64, 256]
+    learning_rates = [1e-2, 1e-3, 1e-4]
+
+    for batch_size in batch_sizes:
+        for learning_rate in learning_rates:
+            train_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, collate_fn=custom_collate_fn)
+
+            model_name = f'model_bs{batch_size}_lr{learning_rate}'
+
+            # Initialize and configure wandb run
+            wandb.init(project="test_train_2", name=model_name, reinit=True)
+
+            trainer = Trainer(
+                batch_size=batch_size,
+                learning_rate=learning_rate,
+                model_name=model_name,
+            )
+            trainer(train_loader)
+
+            # Ensure the current wandb run is properly closed before the next
+            wandb.finish()
+
 
 if __name__ == "__main__":
     main()
