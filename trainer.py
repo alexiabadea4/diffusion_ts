@@ -199,7 +199,7 @@ def main():
             wandb.init(project="test_train_2", name=model_name, reinit=True)
 
             trainer = Trainer(
-                net = net
+                net = net,
                 batch_size=batch_size,
                 learning_rate=learning_rate,
                 model_name=model_name,
