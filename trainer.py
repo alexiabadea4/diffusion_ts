@@ -20,6 +20,7 @@ class Trainer:
 
     def __init__(
             self,
+            net: GaussianDiffusion,
             epochs: int = 10,
             batch_size: int = 32,
             num_batches_per_epoch: int = 50,
@@ -30,7 +31,7 @@ class Trainer:
             model_type : str ='torch',
             model_save_path : str = 'model_sav_path',
             input_size = [ 256],
-            net = GaussianDiffusion(EpsilonTheta([256]), input_size = [256]),
+           
 
             **kwargs,
     )->None:
@@ -190,13 +191,15 @@ def main():
     for batch_size in batch_sizes:
         for learning_rate in learning_rates:
             train_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, collate_fn=custom_collate_fn)
+            net = GaussianDiffusion(EpsilonTheta([256]), input_size = 256)
 
-            model_name = f'model_bs{batch_size}_lr{learning_rate}'
+            model_name = f'model_batch{batch_size}_lr{learning_rate}'
 
             # Initialize and configure wandb run
             wandb.init(project="test_train_2", name=model_name, reinit=True)
 
             trainer = Trainer(
+                net = net
                 batch_size=batch_size,
                 learning_rate=learning_rate,
                 model_name=model_name,
