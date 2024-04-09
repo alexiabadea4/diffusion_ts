@@ -1,0 +1,52 @@
+{
+    "os": "Windows-10-10.0.22631-SP0",
+    "python": "3.8.19",
+    "heartbeatAt": "2024-04-09T11:38:00.126624",
+    "startedAt": "2024-04-09T11:37:48.540505",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "<python with no main file>",
+    "codePathLocal": null,
+    "git": {
+        "remote": "https://github.com/alexiabadea4/diffusion_ts.git",
+        "commit": "e05f8a978f0b1eb4f9d8d17d460d47bc778e6464"
+    },
+    "email": "alexiabadea411@gmail.com",
+    "root": "C:/Users/Alexia/diffusion_ts",
+    "host": "DESKTOP-9B67GE0",
+    "username": "Alexia",
+    "executable": "c:\\Users\\Alexia\\anaconda3\\envs\\oneddif\\python.exe",
+    "cpu_count": 24,
+    "cpu_count_logical": 32,
+    "cpu_freq": {
+        "current": 2200.0,
+        "min": 0.0,
+        "max": 2200.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2200.0,
+            "min": 0.0,
+            "max": 2200.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 953.1435508728027,
+            "used": 97.08271789550781
+        }
+    },
+    "gpu": "NVIDIA GeForce RTX 4070 Laptop GPU",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 4070 Laptop GPU",
+            "memory_total": 8585740288
+        }
+    ],
+    "memory": {
+        "total": 31.627464294433594
+    }
+}
