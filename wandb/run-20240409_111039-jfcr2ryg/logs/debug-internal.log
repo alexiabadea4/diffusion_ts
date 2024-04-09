@@ -1,0 +1,53 @@
+2024-04-09 11:10:46,049 INFO    StreamThr :12900 [internal.py:wandb_internal():86] W&B internal server running at pid: 12900, started at: 2024-04-09 11:10:46.048100
+2024-04-09 11:10:46,051 DEBUG   HandlerThread:12900 [handler.py:handle_request():146] handle_request: status
+2024-04-09 11:10:46,053 INFO    WriterThread:12900 [datastore.py:open_for_write():87] open: c:\Users\Alexia\diffusion_ts\wandb\run-20240409_111039-jfcr2ryg\run-jfcr2ryg.wandb
+2024-04-09 11:10:46,053 DEBUG   SenderThread:12900 [sender.py:send():379] send: header
+2024-04-09 11:10:46,053 DEBUG   SenderThread:12900 [sender.py:send():379] send: run
+2024-04-09 11:10:46,623 INFO    SenderThread:12900 [dir_watcher.py:__init__():211] watching files in: c:\Users\Alexia\diffusion_ts\wandb\run-20240409_111039-jfcr2ryg\files
+2024-04-09 11:10:46,624 INFO    SenderThread:12900 [sender.py:_start_run_threads():1124] run started: jfcr2ryg with start time 1712650245.082853
+2024-04-09 11:10:46,632 DEBUG   HandlerThread:12900 [handler.py:handle_request():146] handle_request: check_version
+2024-04-09 11:10:46,632 DEBUG   SenderThread:12900 [sender.py:send_request():406] send_request: check_version
+2024-04-09 11:10:46,991 DEBUG   HandlerThread:12900 [handler.py:handle_request():146] handle_request: run_start
+2024-04-09 11:10:47,000 DEBUG   HandlerThread:12900 [system_info.py:__init__():26] System info init
+2024-04-09 11:10:47,000 DEBUG   HandlerThread:12900 [system_info.py:__init__():41] System info init done
+2024-04-09 11:10:47,000 INFO    HandlerThread:12900 [system_monitor.py:start():194] Starting system monitor
+2024-04-09 11:10:47,000 INFO    SystemMonitor:12900 [system_monitor.py:_start():158] Starting system asset monitoring threads
+2024-04-09 11:10:47,001 INFO    HandlerThread:12900 [system_monitor.py:probe():214] Collecting system info
+2024-04-09 11:10:47,005 INFO    SystemMonitor:12900 [interfaces.py:start():190] Started cpu monitoring
+2024-04-09 11:10:47,007 DEBUG   HandlerThread:12900 [system_info.py:probe():150] Probing system
+2024-04-09 11:10:47,008 INFO    SystemMonitor:12900 [interfaces.py:start():190] Started disk monitoring
+2024-04-09 11:10:47,008 INFO    SystemMonitor:12900 [interfaces.py:start():190] Started gpu monitoring
+2024-04-09 11:10:47,013 DEBUG   HandlerThread:12900 [system_info.py:_probe_git():135] Probing git
+2024-04-09 11:10:47,014 INFO    SystemMonitor:12900 [interfaces.py:start():190] Started memory monitoring
+2024-04-09 11:10:47,023 INFO    SystemMonitor:12900 [interfaces.py:start():190] Started network monitoring
+2024-04-09 11:10:47,091 DEBUG   HandlerThread:12900 [system_info.py:_probe_git():143] Probing git done
+2024-04-09 11:10:47,091 DEBUG   HandlerThread:12900 [system_info.py:probe():198] Probing system done
+2024-04-09 11:10:47,091 DEBUG   HandlerThread:12900 [system_monitor.py:probe():223] {'os': 'Windows-10-10.0.22631-SP0', 'python': '3.8.19', 'heartbeatAt': '2024-04-09T08:10:47.007503', 'startedAt': '2024-04-09T08:10:39.143093', 'docker': None, 'cuda': None, 'args': (), 'state': 'running', 'program': '<python with no main file>', 'codePathLocal': None, 'git': {'remote': 'https://github.com/alexiabadea4/diffusion_ts.git', 'commit': '270dd3360abbacb25aaf1929ebe1731ba0916063'}, 'email': 'alexiabadea411@gmail.com', 'root': 'C:/Users/Alexia/diffusion_ts', 'host': 'DESKTOP-9B67GE0', 'username': 'Alexia', 'executable': 'c:\\Users\\Alexia\\anaconda3\\envs\\oneddif\\python.exe', 'cpu_count': 24, 'cpu_count_logical': 32, 'cpu_freq': {'current': 2200.0, 'min': 0.0, 'max': 2200.0}, 'cpu_freq_per_core': [{'current': 2200.0, 'min': 0.0, 'max': 2200.0}], 'disk': {'/': {'total': 953.1435508728027, 'used': 96.74291229248047}}, 'gpu': 'NVIDIA GeForce RTX 4070 Laptop GPU', 'gpu_count': 1, 'gpu_devices': [{'name': 'NVIDIA GeForce RTX 4070 Laptop GPU', 'memory_total': 8585740288}], 'memory': {'total': 31.627464294433594}}
+2024-04-09 11:10:47,091 INFO    HandlerThread:12900 [system_monitor.py:probe():224] Finished collecting system info
+2024-04-09 11:10:47,091 INFO    HandlerThread:12900 [system_monitor.py:probe():227] Publishing system info
+2024-04-09 11:10:47,091 DEBUG   HandlerThread:12900 [system_info.py:_save_conda():207] Saving list of conda packages installed into the current environment
+2024-04-09 11:10:47,093 ERROR   HandlerThread:12900 [system_info.py:_save_conda():221] Error saving conda packages: [WinError 2] The system cannot find the file specified
+Traceback (most recent call last):
+  File "c:\Users\Alexia\anaconda3\envs\oneddif\lib\site-packages\wandb\sdk\internal\system\system_info.py", line 214, in _save_conda
+    subprocess.call(
+  File "c:\Users\Alexia\anaconda3\envs\oneddif\lib\subprocess.py", line 340, in call
+    with Popen(*popenargs, **kwargs) as p:
+  File "c:\Users\Alexia\anaconda3\envs\oneddif\lib\subprocess.py", line 858, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "c:\Users\Alexia\anaconda3\envs\oneddif\lib\subprocess.py", line 1327, in _execute_child
+    hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+FileNotFoundError: [WinError 2] The system cannot find the file specified
+2024-04-09 11:10:47,093 DEBUG   HandlerThread:12900 [system_info.py:_save_conda():222] Saving conda packages done
+2024-04-09 11:10:47,096 INFO    HandlerThread:12900 [system_monitor.py:probe():229] Finished publishing system info
+2024-04-09 11:10:47,096 DEBUG   SenderThread:12900 [sender.py:send():379] send: files
+2024-04-09 11:10:47,096 INFO    SenderThread:12900 [sender.py:_save_file():1390] saving file wandb-metadata.json with policy now
+2024-04-09 11:10:47,220 DEBUG   HandlerThread:12900 [handler.py:handle_request():146] handle_request: python_packages
+2024-04-09 11:10:47,221 DEBUG   SenderThread:12900 [sender.py:send_request():406] send_request: python_packages
+2024-04-09 11:10:47,221 DEBUG   HandlerThread:12900 [handler.py:handle_request():146] handle_request: stop_status
+2024-04-09 11:10:47,221 DEBUG   SenderThread:12900 [sender.py:send_request():406] send_request: stop_status
+2024-04-09 11:10:47,222 DEBUG   HandlerThread:12900 [handler.py:handle_request():146] handle_request: internal_messages
+2024-04-09 11:10:47,627 INFO    Thread-87 :12900 [dir_watcher.py:_on_file_created():271] file/dir created: c:\Users\Alexia\diffusion_ts\wandb\run-20240409_111039-jfcr2ryg\files\conda-environment.yaml
+2024-04-09 11:10:47,627 INFO    Thread-87 :12900 [dir_watcher.py:_on_file_created():271] file/dir created: c:\Users\Alexia\diffusion_ts\wandb\run-20240409_111039-jfcr2ryg\files\requirements.txt
+2024-04-09 11:10:47,627 INFO    Thread-87 :12900 [dir_watcher.py:_on_file_created():271] file/dir created: c:\Users\Alexia\diffusion_ts\wandb\run-20240409_111039-jfcr2ryg\files\wandb-metadata.json
+2024-04-09 11:10:47,707 DEBUG   SenderThread:12900 [sender.py:send():379] send: telemetry
+2024-04-09 11:10:47,945 INFO    wandb-upload_0:12900 [upload_job.py:push():131] Uploaded file C:\Users\Alexia\AppData\Local\Temp\tmp5zmahabdwandb\2ssxht39-wandb-metadata.json

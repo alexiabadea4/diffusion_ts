@@ -21,7 +21,7 @@ class Trainer:
     def __init__(
             self,
             net: GaussianDiffusion,
-            epochs: int = 10,
+            epochs: int = 500,
             batch_size: int = 32,
             num_batches_per_epoch: int = 50,
             learning_rate: float = 1e-3,
@@ -183,7 +183,7 @@ def custom_collate_fn(batch):
 def main():
     file_path = 'datasets/train_set.pth'
     dataset = torch.load(file_path)
-
+    epochs = 500
     # Broader grid search parameters
     batch_sizes = [16, 64, 256]
     learning_rates = [1e-2, 1e-3, 1e-4]
@@ -193,7 +193,7 @@ def main():
             train_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, collate_fn=custom_collate_fn)
             net = GaussianDiffusion(EpsilonTheta([256]), input_size = 256)
 
-            model_name = f'model_batch{batch_size}_lr{learning_rate}'
+            model_name = f'model_batch{batch_size}_lr{learning_rate}_e{epochs}'
 
             # Initialize and configure wandb run
             wandb.init(project="test_train_2", name=model_name, reinit=True)
