@@ -31,6 +31,10 @@ class Trainer:
             model_type : str ='torch',
             model_save_path : str = 'model_sav_path',
             input_size = [ 256],
+            beta_end :float = 0.1,
+            diff_steps: int = 100,
+            loss_type: str = 'l2',
+            beta_schedule: str = 'linear',
            
 
             **kwargs,
@@ -47,6 +51,10 @@ class Trainer:
         self.model_save_path = model_save_path
         self.input_size = input_size
         self.net = net
+        self.beta_end = beta_end
+        self.diff_steps = diff_steps
+        self.loss_type = loss_type
+        self.beta_schedule = beta_schedule
         
 
 
@@ -70,6 +78,9 @@ class Trainer:
             'learning_rate': self.learning_rate,
             'weight_decay': self.weight_decay,
             'maximum_learning_rate': self.maximum_learning_rate,
+            'beta_end': self.beta_end,
+            'loss_type': self.loss_type,
+            'beta_schedule': self.beta_schedule,
         }
         wandb.config.update(config)
 
@@ -151,6 +162,9 @@ class Trainer:
             'learning_rate': self.learning_rate,
             'weight_decay': self.weight_decay,
             'layers': [str(layer) for layer in model.children()],
+            'beta_end': self.beta_end,
+            'loss_type': self.loss_type,
+            'beta_schedule': self.beta_schedule,
         }
         
         # Add the model file to the artifact
@@ -181,33 +195,23 @@ def custom_collate_fn(batch):
 #     trainer(train_loader)
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--epochs", type=int, default=500)
+    parser.add_argument("--batch_size", type=int, default=32)
+    parser.add_argument("--learning_rate", type=float, default=1e-3)
+    parser.add_argument("--model_name", type=str, default="model")
+    parser.add_argument("--beta_end",type=float, default="beta_end")
+    parser.add_argument("--diff_steps", type=int, default="diff_steps")
+    parser.add_argument("--loss_type", type=str,default="loss_type")
+    parser.add_argument("--beta_schedule", type=str, default="beta_schedule")
+    args = parser.parse_args()
+
     file_path = 'datasets/train_set.pth'
     dataset = torch.load(file_path)
-    epochs = 500
-    # Broader grid search parameters
-    batch_sizes = [256 ]
-    learning_rates = [1e-2, 1e-3, 1e-4]
-
-    for batch_size in batch_sizes:
-        for learning_rate in learning_rates:
-            train_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, collate_fn=custom_collate_fn)
-            net = GaussianDiffusion(EpsilonTheta([256]), input_size = 256)
-
-            model_name = f'model_batch{batch_size}_lr{learning_rate}_e{epochs}'
-
-            # Initialize and configure wandb run
-            wandb.init(project="test_train_2", name=model_name, reinit=True)
-
-            trainer = Trainer(
-                net = net,
-                batch_size=batch_size,
-                learning_rate=learning_rate,
-                model_name=model_name,
-            )
-            trainer(train_loader)
-
-            # Ensure the current wandb run is properly closed before the next
-            wandb.finish()
+    train_loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=True)
+    wandb.init(project="test_train_2", reinit=True)
+    net = GaussianDiffusion(EpsilonTheta([256]), input_size=256, beta_end = args.beta_end, diff_steps = args.diff_steps, loss_type = args.loss_type, beta_schedule = args.beta_schedule)
+    trainer = Trainer(net, args.epochs, args.batch_size, 50, args.learning_rate, args.beta_end, args.diff_steps, args.loss_type, args.beta_schedule)
 
 
 if __name__ == "__main__":
