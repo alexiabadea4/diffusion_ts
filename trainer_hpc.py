@@ -30,7 +30,7 @@ class Trainer:
             model_name : str = 'model',
             model_type : str ='torch',
             model_save_path : str = 'model_sav_path',
-            input_size = [ 256],
+            input_size = [256],
             beta_end :float = 0.1,
             diff_steps: int = 100,
             loss_type: str = 'l2',
@@ -80,6 +80,7 @@ class Trainer:
             'maximum_learning_rate': self.maximum_learning_rate,
             'beta_end': self.beta_end,
             'loss_type': self.loss_type,
+            'diff_steps': self.diff_steps,
             'beta_schedule': self.beta_schedule,
         }
         wandb.config.update(config)
@@ -205,14 +206,24 @@ def main():
     parser.add_argument("--loss_type", type=str,default="loss_type")
     parser.add_argument("--beta_schedule", type=str, default="beta_schedule")
     args = parser.parse_args()
-
-    file_path = 'datasets/train_set.pth'
+    model_name = f"bs{args.batch_size}_lr{args.learning_rate}_be{args.beta_end}_ds{args.diff_steps}_lt{args.loss_type}_bsch{args.beta_schedule}"
+    file_path = 'datasets/train_set_big.pth'
     dataset = torch.load(file_path)
-    train_loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=True)
-    wandb.init(project="test_train_2", reinit=True)
+    train_loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=True, collate_fn=custom_collate_fn)
+    wandb.init(project="test_train_2", name=model_name, reinit=True)
     net = GaussianDiffusion(EpsilonTheta([256]), input_size=256, beta_end = args.beta_end, diff_steps = args.diff_steps, loss_type = args.loss_type, beta_schedule = args.beta_schedule)
-    trainer = Trainer(net, args.epochs, args.batch_size, 50, args.learning_rate, args.beta_end, args.diff_steps, args.loss_type, args.beta_schedule)
-
+    trainer = Trainer(
+        net = net, 
+        epochs = args.epochs, 
+        batch_size = args.batch_size, 
+        learning_rate = args.learning_rate, 
+        model_name = model_name,
+        beta_end = args.beta_end, 
+        diff_steps = args.diff_steps, 
+        loss_type = args.loss_type, 
+        beta_schedule = args.beta_schedule
+        )
+    trainer(train_loader)
 
 if __name__ == "__main__":
     main()

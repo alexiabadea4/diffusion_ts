@@ -1,0 +1,5 @@
+2024-04-23 10:16:36,478 INFO    StreamThr :3508 [internal.py:wandb_internal():86] W&B internal server running at pid: 3508, started at: 2024-04-23 10:16:36.478140
+2024-04-23 10:16:36,478 DEBUG   HandlerThread:3508 [handler.py:handle_request():146] handle_request: status
+2024-04-23 10:16:36,480 INFO    WriterThread:3508 [datastore.py:open_for_write():87] open: c:\Users\Alexia\diffusion_ts\wandb\run-20240423_101631-wnqcwtxt\run-wnqcwtxt.wandb
+2024-04-23 10:16:36,481 DEBUG   SenderThread:3508 [sender.py:send():379] send: header
+2024-04-23 10:16:36,481 DEBUG   SenderThread:3508 [sender.py:send():379] send: run

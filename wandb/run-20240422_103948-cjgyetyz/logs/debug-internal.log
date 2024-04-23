@@ -1,0 +1,10 @@
+2024-04-22 10:39:48,230 INFO    StreamThr :11880 [internal.py:wandb_internal():86] W&B internal server running at pid: 11880, started at: 2024-04-22 10:39:48.226360
+2024-04-22 10:39:48,232 DEBUG   HandlerThread:11880 [handler.py:handle_request():146] handle_request: status
+2024-04-22 10:39:48,232 INFO    WriterThread:11880 [datastore.py:open_for_write():87] open: c:\Users\Alexia\diffusion_ts\wandb\run-20240422_103948-cjgyetyz\run-cjgyetyz.wandb
+2024-04-22 10:39:48,232 DEBUG   SenderThread:11880 [sender.py:send():379] send: header
+2024-04-22 10:39:48,264 DEBUG   SenderThread:11880 [sender.py:send():379] send: run
+2024-04-22 10:39:48,901 INFO    SenderThread:11880 [dir_watcher.py:__init__():211] watching files in: c:\Users\Alexia\diffusion_ts\wandb\run-20240422_103948-cjgyetyz\files
+2024-04-22 10:39:48,901 INFO    SenderThread:11880 [sender.py:_start_run_threads():1124] run started: cjgyetyz with start time 1713771588.232519
+2024-04-22 10:39:48,901 DEBUG   HandlerThread:11880 [handler.py:handle_request():146] handle_request: check_version
+2024-04-22 10:39:48,901 DEBUG   SenderThread:11880 [sender.py:send_request():406] send_request: check_version
+2024-04-22 10:39:49,288 DEBUG   HandlerThread:11880 [handler.py:handle_request():146] handle_request: run_start

@@ -2,6 +2,7 @@ import torch as T
 import numpy as np
 from .DGdif import generate_balanced_dataset
 
+
 class SynthSignalsDataset(T.utils.data.Dataset):
     """A PyTorch Dataset class for a balanced dataset of synthetic signals."""
 
@@ -37,3 +38,5 @@ class SynthSignalsDataset(T.utils.data.Dataset):
         gt = self.y_data[idx]
         sc = self.signalclasses[idx]
         return {'signals': signals, 'gt': gt, 'sc': sc}
+    
+

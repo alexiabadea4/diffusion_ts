@@ -30,7 +30,7 @@ class Trainer:
             model_name : str = 'model',
             model_type : str ='torch',
             model_save_path : str = 'model_sav_path',
-            input_size = [ 256],
+            input_size = [256],
            
 
             **kwargs,
