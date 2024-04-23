@@ -89,14 +89,15 @@ def makesignal(noise_level, signalclass):
     return y, patterntype, signalclass 
 
 def generate_balanced_dataset(num_samples_per_class, noise_level):
-    num_classes = 1  
+    num_classes = 5  
     num_samples = num_samples_per_class * num_classes
     signals = np.zeros((num_samples, 256))
     masks = np.zeros((num_samples, 256, 6))
     signalclasses = np.zeros(num_samples)
     
-    for i in range(num_samples_per_class):
-        for signalclass in range(num_classes):
+    for signalclass in range(num_classes):
+        for i in range(num_samples_per_class):
+
             index = i + num_samples_per_class * signalclass
             s, gt, _ = makesignal(noise_level, signalclass)
             signals[index, :] = s
