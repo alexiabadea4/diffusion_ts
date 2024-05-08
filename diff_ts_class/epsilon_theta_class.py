@@ -60,7 +60,7 @@ class ResidualBlock(nn.Module):
 class EpsilonThetaClass(nn.Module):
     def __init__(
         self,
-        num_classes,
+        num_classes = 5,
         #cond_length,
         time_emb_dim=16,
         residual_layers=8,

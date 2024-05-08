@@ -1,2 +1,1 @@
 from .datasetdif import SynthSignalsDataset
-from .datasetdifbig import SynthSignalsDatasetBig

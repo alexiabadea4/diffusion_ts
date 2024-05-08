@@ -208,7 +208,7 @@ class GaussianDiffusionClass(nn.Module):
 
         for i in reversed(range(0, self.num_timesteps)):
             img = self.p_sample(
-                img, torch.full((b,),class_labels, i, device=device, dtype=torch.long)
+                img, torch.full((b,), i, device=device, dtype=torch.long), class_labels
             )
         return img
     
@@ -239,7 +239,7 @@ class GaussianDiffusionClass(nn.Module):
         img = (1 - lam) * xt1 + lam * xt2
         for i in reversed(range(0, t)):
             img = self.p_sample(
-                img, torch.full((b,), class_labels,i, device=device, dtype=torch.long)
+                img, torch.full((b,), i, device=device, dtype=torch.long), class_labels
             )
 
         return img
@@ -277,7 +277,7 @@ class GaussianDiffusionClass(nn.Module):
 
         time = torch.randint(0, self.num_timesteps, (B * T,), device=x.device).long()
         loss = self.p_losses(
-            x.reshape(B * T, 1, -1), class_labels, time, *args, **kwargs
+            x.reshape(B * T, 1, -1),  time, class_labels,*args, **kwargs
         )
 
         return loss
