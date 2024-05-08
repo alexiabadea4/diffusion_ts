@@ -1,1 +1,0 @@
-{"train_loss": 0.07395933708176017, "_timestamp": 1713855219.9155788, "_runtime": 1132.7821638584137, "_step": 2049, "epoch": 50, "learning_rate": 0.0003999999999999993, "gradient_norm": 0.6037413196605732, "training_time_per_epoch": 3.120933771133423, "_wandb": {"runtime": 1131}}

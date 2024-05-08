@@ -1,9 +1,0 @@
-
-[34m[1mwandb[39m[22m:   1 of 1 files downloaded.
-[t-SNE] Computing 121 nearest neighbors...
-[t-SNE] Indexed 2000 samples in 0.006s...
-[t-SNE] Computed neighbors for 2000 samples in 0.337s...
-[t-SNE] Computed conditional probabilities for sample 1000 / 2000
-[t-SNE] Computed conditional probabilities for sample 2000 / 2000
-[t-SNE] Mean sigma: 4.279775
-[t-SNE] KL divergence after 50 iterations with early exaggeration: 73.039719

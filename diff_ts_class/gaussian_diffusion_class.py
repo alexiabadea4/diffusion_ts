@@ -281,6 +281,3 @@ class GaussianDiffusionClass(nn.Module):
         )
 
         return loss
-    
-    
-        
