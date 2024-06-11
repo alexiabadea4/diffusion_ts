@@ -39,4 +39,3 @@ class SynthSignalsDataset(T.utils.data.Dataset):
         sc = self.signalclasses[idx]
         return {'signals': signals, 'gt': gt, 'sc': sc}
     
-
