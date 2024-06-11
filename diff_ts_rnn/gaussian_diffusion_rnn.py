@@ -7,10 +7,6 @@ import torch
 from torch import nn, einsum
 import torch.nn.functional as F
 
-
-#  COND HAS BEEN TAKEN OUT FROM FUNCTIONS
-
-
 def default(val, d):
     if val is not None:
         return val
@@ -43,11 +39,10 @@ def cosine_beta_schedule(timesteps, s=0.008):
     betas = 1 - (alphas_cumprod[1:] / alphas_cumprod[:-1])
     return np.clip(betas, 0, 0.999)
 
-
-class GaussianDiffusion(nn.Module):
+class GaussianDiffusionRNN(nn.Module):
     def __init__(
         self,
-        denoise_fn,#pass epsilon theta
+        denoise_fn,  # pass epsilon theta
         input_size,
         beta_end=0.1,
         diff_steps=100,
@@ -97,7 +92,6 @@ class GaussianDiffusion(nn.Module):
         self.register_buffer("alphas_cumprod", to_torch(alphas_cumprod))
         self.register_buffer("alphas_cumprod_prev", to_torch(alphas_cumprod_prev))
 
-        # calculations for diffusion q(x_t | x_{t-1}) and others
         self.register_buffer("sqrt_alphas_cumprod", to_torch(np.sqrt(alphas_cumprod)))
         self.register_buffer(
             "sqrt_one_minus_alphas_cumprod", to_torch(np.sqrt(1.0 - alphas_cumprod))
@@ -112,13 +106,13 @@ class GaussianDiffusion(nn.Module):
             "sqrt_recipm1_alphas_cumprod", to_torch(np.sqrt(1.0 / alphas_cumprod - 1))
         )
 
-        # calculations for posterior q(x_{t-1} | x_t, x_0)
+    
         posterior_variance = (
             betas * (1.0 - alphas_cumprod_prev) / (1.0 - alphas_cumprod)
         )
-        # above: equal to 1. / (1. / (1. - alpha_cumprod_tm1) + alpha_t / beta_t)
+    
         self.register_buffer("posterior_variance", to_torch(posterior_variance))
-        # below: log calculation clipped because the posterior variance is 0 at the beginning of the diffusion chain
+        
         self.register_buffer(
             "posterior_log_variance_clipped",
             to_torch(np.log(np.maximum(posterior_variance, 1e-20))),
@@ -141,6 +135,11 @@ class GaussianDiffusion(nn.Module):
     @scale.setter
     def scale(self, scale):
         self.__scale = scale
+
+    def quantile_loss(self, predictions, targets, quantiles):
+        errors = targets - predictions
+        loss = torch.maximum(quantiles * errors, (quantiles - 1) * errors)
+        return loss.mean()
 
     def q_mean_variance(self, x_start, t):
         mean = extract(self.sqrt_alphas_cumprod, t, x_start.shape) * x_start
@@ -165,9 +164,41 @@ class GaussianDiffusion(nn.Module):
         )
         return posterior_mean, posterior_variance, posterior_log_variance_clipped
 
-    def p_mean_variance(self, x, t, clip_denoised: bool):
+
+    @torch.no_grad()
+    def q_sample_loop(self, x_0, shape):
+        device = self.betas.device
+        b = shape[0]
+        img = torch.empty(self.num_timesteps, *shape)
+        for i in range(0, self.num_timesteps):
+            img[i] = self.q_sample(x_0, torch.full((b,), i, device=device, dtype=torch.long))
+        return img
+    
+    @torch.no_grad()
+    def p_sample_loop(self, x, time_steps=None, quantiles=None, class_labels=None):
+        device = self.betas.device
+        b = x.shape[0]
+        img = torch.randn(x.shape, device=device)
+
+        for i in reversed(range(0, self.num_timesteps)):
+            img = self.p_sample(
+                img, torch.full((b,), i, device=device, dtype=torch.long), class_labels, time_steps, quantiles
+            )
+        return img
+
+    @torch.no_grad()
+    def p_sample(self, x, t, class_labels, time_steps, quantiles, clip_denoised=False, repeat_noise=False):
+        b, *_, device = *x.shape, x.device
+        model_mean, _, model_log_variance = self.p_mean_variance(
+            x=x, t=t, class_labels=class_labels, clip_denoised=clip_denoised, time_steps=time_steps, quantiles=quantiles
+        )
+        noise = noise_like(x.shape, device, repeat_noise)
+        nonzero_mask = (1 - (t == 0).float()).reshape(b, *((1,) * (len(x.shape) - 1)))
+        return model_mean + nonzero_mask * (0.5 * model_log_variance).exp() * noise
+
+    def p_mean_variance(self, x, t, class_labels, clip_denoised, time_steps, quantiles):
         x_recon = self.predict_start_from_noise(
-            x, t=t, noise=self.denoise_fn(x, t)
+            x, t=t, noise=self.denoise_fn(x, time_steps, class_labels, quantiles)
         )
 
         if clip_denoised:
@@ -177,57 +208,22 @@ class GaussianDiffusion(nn.Module):
             x_start=x_recon, x_t=x, t=t
         )
         return model_mean, posterior_variance, posterior_log_variance
-    
-    @torch.no_grad()
-    def q_sample_loop(self,x_0, shape):
-        device = self.betas.device
-
-        b=shape[0]
-        img=torch.empty(self.num_timesteps, *shape)
-        for i in range(0, self.num_timesteps) :
-            img[i]=self.q_sample(x_0, torch.full((b,), i, device=device, dtype=torch.long))
-        return img
 
     @torch.no_grad()
-    def p_sample(self, x, t, clip_denoised=False, repeat_noise=False):
-        b, *_, device = *x.shape, x.device
-        model_mean, _, model_log_variance = self.p_mean_variance(
-            x=x, t=t, clip_denoised=clip_denoised
-        )
-        noise = noise_like(x.shape, device, repeat_noise)
-        # no noise when t == 0
-        nonzero_mask = (1 - (t == 0).float()).reshape(b, *((1,) * (len(x.shape) - 1)))
-        return model_mean + nonzero_mask * (0.5 * model_log_variance).exp() * noise
-
-    @torch.no_grad()
-    def p_sample_loop(self, x):
-        device = self.betas.device
-
-        b = x.shape[0]
-        img = torch.randn(x.shape, device=device)
-
-        for i in reversed(range(0, self.num_timesteps)):
-            img = self.p_sample(
-                img, torch.full((b,), i, device=device, dtype=torch.long)
-            )
-        return img
-    
-
-    @torch.no_grad()
-    def sample(self, sample_shape=torch.Size(), cond=None):
+    def sample(self, class_labels, sample_shape=torch.Size(), cond=None):
         if cond is not None:
             shape = cond.shape[:-1] + (self.input_size,)
             # TODO reshape cond to (B*T, 1, -1)
         else:
             shape = sample_shape
-        x_hat = self.p_sample_loop(shape, cond)  
+        x_hat = self.p_sample_loop(shape, class_labels) 
 
         if self.scale is not None:
             x_hat *= self.scale
         return x_hat
 
     @torch.no_grad()
-    def interpolate(self, x1, x2, t=None, lam=0.5):
+    def interpolate(self, x1, x2, class_labels, t=None, lam=0.5):
         b, *_, device = *x1.shape, x1.device
         t = default(t, self.num_timesteps - 1)
 
@@ -239,24 +235,22 @@ class GaussianDiffusion(nn.Module):
         img = (1 - lam) * xt1 + lam * xt2
         for i in reversed(range(0, t)):
             img = self.p_sample(
-                img, torch.full((b,), i, device=device, dtype=torch.long)
+                img, torch.full((b,), i, device=device, dtype=torch.long), class_labels
             )
 
         return img
 
     def q_sample(self, x_start, t, noise=None):
         noise = default(noise, lambda: torch.randn_like(x_start))
-
         return (
             extract(self.sqrt_alphas_cumprod, t, x_start.shape) * x_start
             + extract(self.sqrt_one_minus_alphas_cumprod, t, x_start.shape) * noise
         )
 
-    def p_losses(self, x_start, t, noise=None):
+    def p_losses(self, x_start, t, class_labels, noise=None):
         noise = default(noise, lambda: torch.randn_like(x_start))
-
         x_noisy = self.q_sample(x_start=x_start, t=t, noise=noise)
-        x_recon = self.denoise_fn(x_noisy, t)
+        x_recon = self.denoise_fn(x_noisy, t, class_labels)
 
         if self.loss_type == "l1":
             loss = F.l1_loss(x_recon, noise)
@@ -269,7 +263,7 @@ class GaussianDiffusion(nn.Module):
 
         return loss
 
-    def log_prob(self, x, *args, **kwargs):
+    def log_prob(self, x, class_labels, *args, **kwargs):
         if self.scale is not None:
             x /= self.scale
 
@@ -277,10 +271,7 @@ class GaussianDiffusion(nn.Module):
 
         time = torch.randint(0, self.num_timesteps, (B * T,), device=x.device).long()
         loss = self.p_losses(
-            x.reshape(B * T, 1, -1), time, *args, **kwargs
+            x.reshape(B * T, 1, -1), time, class_labels, *args, **kwargs
         )
 
         return loss
-    
-    
-        

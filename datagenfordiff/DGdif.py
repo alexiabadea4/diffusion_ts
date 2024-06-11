@@ -9,7 +9,7 @@ def makesignal(noise_level, signalclass):
     maxzero = 40  # Maximum length of zero segments
     minzero = 1  # Minimum length of zero segments
     
-    # Define signal patterns
+    # Define signal patternss
     def square(length, amp, signalclass):
         delta = float(signalclass) - 0.5
         return (amp + delta) * np.ones(length)
